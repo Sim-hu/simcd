@@ -21,7 +21,9 @@
             // MAX関数で大きいほうを選択し、その後の計算
             var maxResult = Math.max(totalSTR / 5, (totalSTR + totalAGI) / 10);
             var result = Math.floor((150 + maxResult) * (1 + cdPercentage / 100)) + cdFixed;
-if (result > 300) {
+
+            //300超えたら300以降半減
+            if (result > 300) {
             result = (result - 300) / 2 + 300;
         }
 
