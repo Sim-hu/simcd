@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <script>
+        function calculate() {
+            // 入力値の取得
+            var baseSTR = parseFloat(document.getElementById('baseSTR').value);
+            var STRPercentage = parseFloat(document.getElementById('STRPercentage').value);
+            var baseAGI = parseFloat(document.getElementById('baseAGI').value);
+            var AGIPercentage = parseFloat(document.getElementById('AGIPercentage').value);
+            var cdPercentage = parseFloat(document.getElementById('cdPercentage').value);
+            var cdFixed = parseFloat(document.getElementById('cdFixed').value);
+
+            // 総STRと総AGIの計算
+            var totalSTR = baseSTR * (1 + STRPercentage / 100);
+            var totalAGI = baseAGI * (1 + AGIPercentage / 100);
+
+            // MAX関数で大きいほうを選択し、その後の計算
+            var maxResult = Math.max(totalSTR / 5, (totalSTR + totalAGI) / 10);
+            var result = Math.floor((150 + maxResult) * (1 + cdPercentage / 100)) + cdFixed;
+
+            // 結果の表示
+            document.getElementById('result').innerText = '結果: ' + result;
+        }
+    </script>
+</head>
+<body>
+    <h1>計算機</h1>
+    基礎AGIとAGI%も1とか0%とか入力してください
+    <form>
+        <label for="baseSTR">基礎STR:</label>
+        <input type="number" id="baseSTR" required><br>
+
+        <label for="STRPercentage">STR%:</label>
+        <input type="number" id="STRPercentage" required><br>
+
+        <label for="baseAGI">基礎AGI:</label>
+        <input type="number" id="baseAGI" required><br>
+
+        <label for="AGIPercentage">AGI%:</label>
+        <input type="number" id="AGIPercentage" required><br>
+
+        <label for="cdPercentage">cd%:</label>
+        <input type="number" id="cdPercentage" required><br>
+
+        <label for="cdFixed">cd固定値:</label>
+        <input type="number" id="cdFixed" required><br>
+
+        <button type="button" onclick="calculate()">計算</button>
+    </form>
+
+    <div id="result"></div>
+</body>
+</html>
