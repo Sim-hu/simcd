@@ -7,52 +7,106 @@
     <script>
         function calculate() {
             // 入力値の取得
-            var baseSTR = parseFloat(document.getElementById('baseSTR').value);
-            var STRPercentage = parseFloat(document.getElementById('STRPercentage').value);
-            var baseAGI = parseFloat(document.getElementById('baseAGI').value);
-            var AGIPercentage = parseFloat(document.getElementById('AGIPercentage').value);
-            var cdPercentage = parseFloat(document.getElementById('cdPercentage').value);
-            var cdFixed = parseFloat(document.getElementById('cdFixed').value);
+            var baseSTR = parseFloat(document.getElementById('baseSTR').value) || 0;
+            var STRPercentage = parseFloat(document.getElementById('STRPercentage').value) || 0;
+            var baseAGI = parseFloat(document.getElementById('baseAGI').value) || 0;
+            var AGIPercentage = parseFloat(document.getElementById('AGIPercentage').value) || 0;
+            var cdPercentage = parseFloat(document.getElementById('cdPercentage').value) || 0;
+            var cdFixed = parseFloat(document.getElementById('cdFixed').value) || 0;
+            var criticalUpSlv = parseInt(document.getElementById('criticalUpSlv').value) || 0;
+            var swiftTrajectorySlv = parseInt(document.getElementById('swiftTrajectorySlv').value) || 0;
+
+            // クリティカルUPslvに基づいてcd%を計算
+            cdPercentage += calculateCriticalUpEffect(criticalUpSlv);
+
+            // 総AGIを計算し、神速の軌跡slvに基づいて加算
+            var totalAGI = baseAGI * (1 + AGIPercentage / 100);
+            totalAGI += calculateSwiftTrajectoryEffect(swiftTrajectorySlv);
 
             // 総STRと総AGIの計算
             var totalSTR = baseSTR * (1 + STRPercentage / 100);
-            var totalAGI = baseAGI * (1 + AGIPercentage / 100);
 
             // MAX関数で大きいほうを選択し、その後の計算
             var maxResult = Math.max(totalSTR / 5, (totalSTR + totalAGI) / 10);
             var result = Math.floor((150 + maxResult) * (1 + cdPercentage / 100)) + cdFixed;
 
-            //300超えたら300以降半減
+            // 結果が300を超えた場合の処理
             if (result > 300) {
-            result = (result - 300) / 2 + 300;
-        }
+                result = Math.floor((result - 300) / 2 + 300);
+            }
 
             // 結果の表示
             document.getElementById('result').innerText = '結果: ' + result;
         }
+
+        function calculateCriticalUpEffect(level) {
+            // クリティカルUPslvに基づいてcd%の増加量を計算
+            return Math.min((level - 1), 5);
+        }
+
+        function calculateSwiftTrajectoryEffect(level) {
+            // 神速の軌跡slvに基づいて総AGIの増加量を計算
+            if (level <= 5) {
+                return level;
+            } else {
+                return 5 + (level - 5) * 2;
+            }
+        }
     </script>
 </head>
 <body>
-    <h1>cd計算機</h1>
+    <h1>計算機</h1>
     基礎AGIとAGI%も1とか0%とか入力してください
     <form>
         <label for="baseSTR">基礎STR:</label>
-        <input type="number" id="baseSTR" required><br>
+        <input type="number" id="baseSTR" placeholder="0" value="0" required><br>
 
         <label for="STRPercentage">STR%:</label>
-        <input type="number" id="STRPercentage" required><br>
+        <input type="number" id="STRPercentage" placeholder="0" value="0" required><br>
 
         <label for="baseAGI">基礎AGI:</label>
-        <input type="number" id="baseAGI" required><br>
+        <input type="number" id="baseAGI" placeholder="0" required><br>
 
         <label for="AGIPercentage">AGI%:</label>
-        <input type="number" id="AGIPercentage" required><br>
+        <input type="number" id="AGIPercentage" placeholder="0" required><br>
 
         <label for="cdPercentage">cd%:</label>
-        <input type="number" id="cdPercentage" required><br>
+        <input type="number" id="cdPercentage" placeholder="0" value="0" required><br>
 
         <label for="cdFixed">cd固定値:</label>
-        <input type="number" id="cdFixed" required><br>
+        <input type="number" id="cdFixed" placeholder="0" value="0" required><br>
+
+        <!-- クリティカルUPslvの選択肢を追加 -->
+        <label for="criticalUpSlv">クリティカルUPslv:</label>
+        <select id="criticalUpSlv">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select><br>
+
+        <!-- 神速の軌跡slvの選択肢を追加 -->
+        <label for="swiftTrajectorySlv">神速の軌跡slv:</label>
+        <select id="swiftTrajectorySlv">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select><br>
 
         <button type="button" onclick="calculate()">計算</button>
     </form>
